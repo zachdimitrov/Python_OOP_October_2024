@@ -64,4 +64,4 @@ class Computer(ABC):
         self.ram = ram
         ram_price = int(math.log2(ram) * 100)
         self.price += ram_price
-        return f"Created {self.manufacturer} {self.model} with {self.processor} and {self.ram}GB RAM for {self.price}$."
+        return f"Created {self.__repr__()} for {self.price}$."

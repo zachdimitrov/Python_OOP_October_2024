@@ -9,20 +9,16 @@ class ComputerStoreApp():
 
     @property
     def valid_types(self):
-        return ["Desktop Computer", "Laptop"]
+        return {"Desktop Computer": DesktopComputer, "Laptop": Laptop}
 
     def build_computer(self, type_computer: str,
                        manufacturer: str,
                        model: str,
                        processor: str,
                        ram: int):
-        if type_computer not in self.valid_types:
+        if type_computer not in self.valid_types.keys():
             raise ValueError(f"{type_computer} is not a valid type computer!")
-        if type_computer == self.valid_types[0]:
-            computer = DesktopComputer(manufacturer, model)
-        else:
-            computer = Laptop(manufacturer, model)
-
+        computer = self.valid_types[type_computer](manufacturer, model)
         result = computer.configure_computer(processor, ram)
         self.warehouse.append(computer)
         self.profits += computer.price
