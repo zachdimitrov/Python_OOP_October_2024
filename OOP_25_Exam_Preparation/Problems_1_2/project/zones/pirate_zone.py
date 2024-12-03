@@ -9,11 +9,12 @@ class PirateZone(BaseZone):
         result = f"@Pirate Zone Statistics@\n"
         result += f"Code: {self.code}; Volume: {self.volume}\n"
         result += f"Battleships currently in the Pirate Zone: {len(self.ships)}, " \
-                  f"{len([x for x in self.ships if x.__class__.__name__ == 'RoyalBattleship'])} " \
-                  f"out of them are Royal Battleships.\n"
-
-        result += f"#{', '.join([x.name for x in self.get_ships()])}#"
+                  f"{len([x for x in self.ships if x.ship_type == 'RoyalBattleship'])} " \
+                  f"out of them are Royal Battleships."
+        ordered = self.get_ships()
+        result += f"\n#{', '.join([x.name for x in ordered])}#" if ordered else ""
         return result
 
-    def __repr__(self):
+    @property
+    def zone_type(self):
         return "PirateZone"

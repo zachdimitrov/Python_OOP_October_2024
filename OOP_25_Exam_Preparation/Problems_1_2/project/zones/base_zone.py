@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+from typing import List
+
 from project.battleships.base_battleship import BaseBattleship
 
 
@@ -7,19 +9,15 @@ class BaseZone(ABC):
     def __init__(self, code: str, volume: int):
         self.code = code
         self.volume = volume
-        self.ships: list[BaseBattleship] = []
+        self.ships: List[BaseBattleship] = []
 
     @property
     def code(self):
         return self.__code
 
     @code.setter
-    def code(self, value):
-        only_digits = True
-        for c in value:
-            if not c.isdigit():
-                only_digits = False
-        if not only_digits:
+    def code(self, value: str):
+        if not value.isdigit():
             raise ValueError("Zone code must contain digits only!")
         self.__code = value
 
@@ -30,4 +28,8 @@ class BaseZone(ABC):
     def zone_info(self):
         pass
 
+    @property
+    @abstractmethod
+    def zone_type(self):
+        pass
 

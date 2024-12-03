@@ -10,7 +10,8 @@ class PirateBattleship(BaseBattleship):
         if self.ammunition < 0:
             self.ammunition = 0
 
-    def __repr__(self):
+    @property
+    def ship_type(self):
         return "PirateBattleship"
 
     @property

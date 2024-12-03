@@ -27,15 +27,19 @@ class BaseBattleship(ABC):
     @health.setter
     def health(self, value):
         if value < 0:
-            self.__health = 0
-        else:
-            self.__health = value
+            value = 0
+        self.__health = value
 
     def take_damage(self, enemy_battleship: "BaseBattleship"):
         self.health -= enemy_battleship.hit_strength
 
     @abstractmethod
     def attack(self):
+        pass
+
+    @property
+    @abstractmethod
+    def ship_type(self):
         pass
 
     @property

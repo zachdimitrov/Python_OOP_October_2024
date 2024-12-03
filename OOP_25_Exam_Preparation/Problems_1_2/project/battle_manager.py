@@ -1,3 +1,5 @@
+from typing import List
+
 from project.battleships.base_battleship import BaseBattleship
 from project.battleships.pirate_battleship import PirateBattleship
 from project.battleships.royal_battleship import RoyalBattleship
@@ -11,15 +13,15 @@ class BattleManager():
     SHIP_TYPES = {"RoyalBattleship": RoyalBattleship, "PirateBattleship": PirateBattleship}
 
     def __init__(self):
-        self.zones: list[BaseZone] = []
-        self.ships: list[BaseBattleship] = []
+        self.zones: List[BaseZone] = []
+        self.ships: List[BaseBattleship] = []
 
     def add_zone(self, zone_type: str, zone_code: str):
-        if zone_type not in self.VALID_ZONES.keys():
+        if zone_type not in self.VALID_ZONES:
             raise Exception("Invalid zone type!")
 
         for zone in self.zones:
-            if repr(zone) == zone_type:
+            if zone.code == zone_code:
                 raise Exception("Zone already exists!")
 
         new_zone = self.VALID_ZONES[zone_type](zone_code)
@@ -27,7 +29,7 @@ class BattleManager():
         return f"A zone of type {zone_type} was successfully added."
 
     def add_battleship(self, ship_type: str, name: str, health: int, hit_strength: int):
-        if ship_type not in self.SHIP_TYPES.keys():
+        if ship_type not in self.SHIP_TYPES:
             raise Exception(f"{ship_type} is an invalid type of ship!")
 
         new_ship = self.SHIP_TYPES[ship_type](name, health, hit_strength)
@@ -45,7 +47,7 @@ class BattleManager():
         if not ship.is_available:
             return f"Ship {ship.name} is not available and could not participate!"
 
-        if ship.zone_type == repr(zone):
+        if ship.zone_type == zone.zone_type:
             ship.is_attacking = True
         else:
             ship.is_attacking = False
@@ -81,7 +83,7 @@ class BattleManager():
             return "Not enough participants. The battle is canceled."
         attacker.attack()
         defender.take_damage(attacker)
-        if defender.health == 0:
+        if defender.health <= 0:
             zone.ships.remove(defender)
             self.ships.remove(defender)
             return f"{defender.name} lost the battle and was sunk."
@@ -94,11 +96,11 @@ class BattleManager():
         return "Both ships survived the battle."
 
     def get_statistics(self):
-        available_ships = [x for x in self.ships if x.is_available]
+        available_ships = [x.name for x in self.ships if x.is_available]
         result = f"Available Battleships: {len(available_ships)}\n"
-        result += f"#{', '.join([x.name for x in available_ships])}#\n"
+        result += f"#{', '.join(available_ships)}#\n" if available_ships else ""
         result += "***Zones Statistics:***\n" \
             f"Total Zones: {len(self.zones)}\n"
         zones = sorted(self.zones, key=lambda x: x.code)
         result += "\n".join([z.zone_info() for z in zones])
-        return result
+        return result.strip()
